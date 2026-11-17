@@ -7,6 +7,7 @@ import {
   updateTask,
   deleteTask,
   filterTasks,
+  getTasksInRange,
 } from '../controllers/tasksController.js';
 
 const router = Router();
@@ -14,6 +15,7 @@ const router = Router();
 router.post('/', verifyAuth, createTask);
 router.get('/', verifyAuth, getTasks);
 router.get('/filter', verifyAuth, filterTasks);
+router.get('/range', verifyAuth, getTasksInRange);
 router.get('/:id', verifyAuth, getTaskById);
 router.put('/:id', verifyAuth, updateTask);
 router.delete('/:id', verifyAuth, deleteTask);

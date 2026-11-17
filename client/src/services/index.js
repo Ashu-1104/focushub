@@ -44,6 +44,9 @@ export const tasksService = {
   getAll: (page = 1, limit = 20, filters = {}) =>
     api.get('/tasks', { params: { page, limit, ...filters } }),
 
+  getRange: (start, end) =>
+    api.get('/tasks/range', { params: { start, end } }),
+
   getById: (id) =>
     api.get(`/tasks/${id}`),
 

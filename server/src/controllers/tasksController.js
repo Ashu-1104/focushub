@@ -1,6 +1,6 @@
 import Task from '../models/Task.js';
 import Activity from '../models/Activity.js';
-import { createTaskSchema } from '../validations/schemas.js';
+import { createTaskSchema, taskRangeSchema } from '../validations/schemas.js';
 
 export const createTask = async (req, res, next) => {
   try {
@@ -92,20 +92,22 @@ export const updateTask = async (req, res, next) => {
   try {
     const { title, description, status, priority, dueDate, folderId } = req.body;
 
+    // Only change the fields that were sent, so e.g. moving a task on the
+    // calendar does not wipe its status, or changing status its due date.
+    const changes = { updatedAt: Date.now() };
+    if (title !== undefined) changes.title = title;
+    if (description !== undefined) changes.description = description;
+    if (priority !== undefined) changes.priority = priority;
+    if (folderId !== undefined) changes.folderId = folderId;
+    if (dueDate !== undefined) changes.dueDate = dueDate ? new Date(dueDate) : null;
+    if (status !== undefined) {
+      changes.status = status;
+      changes.completedAt = status === 'done' ? Date.now() : null;
+    }
+
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.userId },
-      {
-        $set: {
-          title,
-          description,
-          status,
-          priority,
-          dueDate: dueDate ? new Date(dueDate) : null,
-          folderId,
-          completedAt: status === 'done' ? Date.now() : null,
-          updatedAt: Date.now(),
-        },
-      },
+      { $set: changes },
       { new: true }
     );
 
@@ -118,7 +120,7 @@ export const updateTask = async (req, res, next) => {
       type: status === 'done' ? 'completed' : 'updated',
       targetModel: 'Task',
       targetId: task._id,
-      metadata: { title },
+      metadata: { title: task.title },
     });
 
     res.json({
@@ -172,6 +174,22 @@ export const filterTasks = async (req, res, next) => {
     }
 
     const tasks = await Task.find(query).sort({ dueDate: 1, priority: -1 });
+
+    res.json({ tasks });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Tasks due between two dates, used by the calendar view.
+export const getTasksInRange = async (req, res, next) => {
+  try {
+    const { start, end } = taskRangeSchema.parse(req.query);
+
+    const tasks = await Task.find({
+      userId: req.user.userId,
+      dueDate: { $gte: new Date(start), $lt: new Date(end) },
+    }).sort({ dueDate: 1, priority: -1 });
 
     res.json({ tasks });
   } catch (error) {

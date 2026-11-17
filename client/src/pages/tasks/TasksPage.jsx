@@ -9,7 +9,10 @@ import {
   updateTask as updateTaskAction,
   deleteTask as deleteTaskAction,
 } from '../../store/slices/tasksSlice';
-import { Check, Plus, Trash2 } from 'lucide-react';
+import { CalendarDays, Check, LayoutGrid, Plus, Trash2 } from 'lucide-react';
+import clsx from 'clsx';
+import TaskCalendar from './TaskCalendar';
+import { dueDateFromKey } from '../../utils/calendar';
 
 const STATUS_COLORS = {
   todo: 'bg-slate-700',
@@ -28,12 +31,16 @@ export default function TasksPage() {
   const dispatch = useDispatch();
   const { items: tasks } = useSelector((state) => state.tasks);
   const [filter, setFilter] = useState('all');
+  const [view, setView] = useState('board');
+  const [calendarVersion, setCalendarVersion] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    priority: 'medium',
-  });
+  const emptyForm = { title: '', description: '', priority: 'medium', dueDate: '' };
+  const [formData, setFormData] = useState(emptyForm);
+
+  const openCreateModal = (dueDate = '') => {
+    setFormData({ ...emptyForm, dueDate });
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -53,10 +60,14 @@ export default function TasksPage() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const response = await tasksService.create(formData);
+      const { dueDate, ...rest } = formData;
+      const response = await tasksService.create(
+        dueDate ? { ...rest, dueDate: dueDateFromKey(dueDate) } : rest
+      );
       dispatch(addTask(response.data.task));
-      setFormData({ title: '', description: '', priority: 'medium' });
+      setFormData(emptyForm);
       setIsModalOpen(false);
+      setCalendarVersion((v) => v + 1);
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -94,12 +105,38 @@ export default function TasksPage() {
       <div className="p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-100">Tasks</h1>
-          <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-            <Plus size={16} />
-            New Task
-          </Button>
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-lg border border-dark-border p-1" role="tablist" aria-label="Task view">
+              {[
+                { id: 'board', label: 'Board', Icon: LayoutGrid },
+                { id: 'calendar', label: 'Calendar', Icon: CalendarDays },
+              ].map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={view === id}
+                  onClick={() => setView(id)}
+                  className={clsx(
+                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors',
+                    view === id ? 'bg-primary-500 text-white' : 'text-slate-400 hover:text-slate-100'
+                  )}
+                >
+                  <Icon size={15} />
+                  {label}
+                </button>
+              ))}
+            </div>
+            <Button variant="primary" onClick={() => openCreateModal()}>
+              <Plus size={16} />
+              New Task
+            </Button>
+          </div>
         </div>
 
+        {view === 'calendar' ? (
+          <TaskCalendar onAddTask={openCreateModal} refreshKey={calendarVersion} />
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {['todo', 'doing', 'done'].map((status) => (
             <div key={status}>
@@ -155,6 +192,7 @@ export default function TasksPage() {
             </div>
           ))}
         </div>
+        )}
 
         <Modal
           isOpen={isModalOpen}
@@ -194,6 +232,13 @@ export default function TasksPage() {
                 <option value="urgent">Urgent</option>
               </select>
             </div>
+
+            <Input
+              label="Due date"
+              type="date"
+              value={formData.dueDate}
+              onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            />
 
             <div className="flex gap-2 justify-end">
               <Button variant="secondary" onClick={() => setIsModalOpen(false)}>

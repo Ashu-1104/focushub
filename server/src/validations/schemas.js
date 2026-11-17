@@ -32,6 +32,18 @@ export const createTaskSchema = z.object({
   folderId: z.string().optional(),
 });
 
+export const taskRangeSchema = z
+  .object({
+    start: z.string().datetime(),
+    end: z.string().datetime(),
+  })
+  .refine(({ start, end }) => new Date(start) < new Date(end), {
+    message: 'start must be before end',
+  })
+  .refine(({ start, end }) => new Date(end) - new Date(start) <= 62 * 24 * 60 * 60 * 1000, {
+    message: 'range can be at most 62 days',
+  });
+
 export const createFolderSchema = z.object({
   name: z.string().min(1),
   icon: z.string().optional(),
