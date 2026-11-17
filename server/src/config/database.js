@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const mongoUri = () => process.env.MONGODB_URI || 'mongodb://localhost:27017/focushub';
+// MONGODB_URL is what Vercel's MongoDB Atlas integration creates with the "MONGODB" prefix.
+const mongoUri = () => process.env.MONGODB_URI || process.env.MONGODB_URL || 'mongodb://localhost:27017/focushub';
 
 // Long-running server: connect once at start-up, exit if the database is unreachable.
 const connectDB = async () => {

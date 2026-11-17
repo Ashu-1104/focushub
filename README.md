@@ -34,7 +34,7 @@ Set these environment variables in the Vercel project:
 
 | Variable | Value |
 | --- | --- |
-| `MONGODB_URI` | MongoDB Atlas connection string (Vercel Storage → MongoDB Atlas adds it for you) |
+| `MONGODB_URI` or `MONGODB_URL` | MongoDB Atlas connection string (Vercel Storage → MongoDB Atlas with the prefix `MONGODB` adds `MONGODB_URL`) |
 | `JWT_SECRET`, `JWT_REFRESH_SECRET` | long random strings |
 | `JWT_EXPIRE`, `JWT_REFRESH_EXPIRE` | `15m`, `7d` |
 | `NODE_ENV` | `production` |
