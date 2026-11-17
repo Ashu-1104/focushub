@@ -1,5 +1,7 @@
 # FocusHub
 
+[![CI](https://github.com/Ashu-1104/focushub/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashu-1104/focushub/actions/workflows/ci.yml)
+
 FocusHub is a modern productivity workspace with notes, tasks, focus sessions, saved resources, settings, authentication, and a persistent AI assistant.
 
 ## Features
@@ -7,10 +9,31 @@ FocusHub is a modern productivity workspace with notes, tasks, focus sessions, s
 - Dashboard with task summaries, streaks, and activity.
 - Notes with folders, tags, markdown-style content, and favorites.
 - Tasks with priority, status, due dates, and filtering.
+- **Calendar view**: month and week calendar of tasks; drag a task to another day to reschedule it, or click a day to add one.
+- **Recurring tasks**: repeat daily, weekly or monthly; completing a task schedules the next one automatically.
+- **Reminders**: optional due time with a reminder (at due time, 10 min, 1 hour or 1 day before) as a browser notification and in-app toast.
+- **Real-time sync**: task changes appear instantly in your other tabs and devices over Socket.IO, with a live connection indicator.
 - Focus mode with session tracking and productivity stats.
 - Jobs, links, and file-style organization.
 - Command palette and responsive app-style navigation.
 - AI Assistant powered by **Gemini 3 Flash** through OpenRouter.
+
+## Tech stack
+
+React 18, Redux Toolkit, Vite, Tailwind CSS, dnd-kit, Socket.IO client · Node.js, Express, MongoDB/Mongoose, Socket.IO, JWT auth, Zod validation · Vitest, Supertest, Testing Library, ESLint, GitHub Actions.
+
+## Real-time sync
+
+Each signed-in browser opens a Socket.IO connection authenticated with the user's JWT and joins a private `user:<id>` room. When a task is created, updated or deleted, the API emits the change to that room, skipping the tab that made the change (identified by the `X-Socket-Id` request header). Other tabs apply the change to the Redux store and refresh the calendar.
+
+## Testing
+
+```bash
+cd server && npm test        # API, recurrence and real-time tests (in-memory MongoDB, or set MONGODB_URI_TEST)
+cd client && npm run lint && npm test
+```
+
+GitHub Actions runs the server tests against a MongoDB service and the client lint, tests and production build on every push and pull request.
 
 ## AI Provider Architecture
 
