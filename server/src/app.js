@@ -15,6 +15,7 @@ import sessionsRoutes from './routes/sessions.js';
 import assistantRoutes from './routes/assistant.js';
 import linksRoutes from './routes/links.js';
 import settingsRoutes from './routes/settings.js';
+import analyticsRoutes from './routes/analytics.js';
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use(`${apiPrefix}/sessions`, sessionsRoutes);
 app.use(`${apiPrefix}/assistant`, assistantRoutes);
 app.use(`${apiPrefix}/links`, linksRoutes);
 app.use(`${apiPrefix}/settings`, settingsRoutes);
+app.use(`${apiPrefix}/analytics`, analyticsRoutes);
 
 // 404 Handler
 app.use((req, res) => {

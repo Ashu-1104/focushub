@@ -9,6 +9,7 @@ const MENU_ITEMS = [
   { id: 'notes', label: 'Notes', path: '/notes', icon: 'FileText' },
   { id: 'tasks', label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
   { id: 'focus', label: 'Focus Mode', path: '/focus', icon: 'Zap' },
+  { id: 'analytics', label: 'Analytics', path: '/analytics', icon: 'BarChart3' },
   { id: 'assistant', label: 'AI Assistant', path: '/assistant', icon: 'Sparkles' },
   { id: 'jobs', label: 'Jobs & Links', path: '/jobs', icon: 'Link2' },
   { id: 'settings', label: 'Settings', path: '/settings', icon: 'Settings' },

@@ -60,6 +60,11 @@ export const tasksService = {
     api.get('/tasks/filter', { params: filters }),
 };
 
+export const analyticsService = {
+  get: (days = 30) =>
+    api.get('/analytics', { params: { days, tz: Intl.DateTimeFormat().resolvedOptions().timeZone } }),
+};
+
 export const dashboardService = {
   getSummary: () =>
     api.get('/dashboard/summary'),

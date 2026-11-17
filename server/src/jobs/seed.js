@@ -7,6 +7,7 @@ import Folder from '../models/Folder.js';
 import Link from '../models/Link.js';
 import Session from '../models/Session.js';
 import Settings from '../models/Settings.js';
+import { insertDemoHistory } from './demoHistory.js';
 
 const seedDatabase = async () => {
   try {
@@ -246,6 +247,10 @@ const seedDatabase = async () => {
       },
     ]);
     console.log(`Created ${sessions.length} focus sessions`);
+
+    // Past weeks of work so the analytics page has data
+    const history = await insertDemoHistory(demoUser._id);
+    console.log(`Created ${history.tasks} past tasks and ${history.sessions} past focus sessions`);
 
     // Update user streak
     demoUser.focusStreak.current = 2;

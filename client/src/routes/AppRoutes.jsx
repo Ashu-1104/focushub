@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LoginPage from '../pages/auth/LoginPage';
@@ -9,7 +10,11 @@ import FocusPage from '../pages/focus/FocusPage';
 import AssistantPage from '../pages/assistant/AssistantPage';
 import JobsPage from '../pages/jobs/JobsPage';
 import SettingsPage from '../pages/settings/SettingsPage';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Charts are heavy: load the analytics page (and Recharts) only when it is opened.
+const AnalyticsPage = lazy(() => import('../pages/analytics/AnalyticsPage'));
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -35,6 +40,7 @@ export const AppRoutes = () => {
           <Route path="/focus" element={<ProtectedRoute><FocusPage /></ProtectedRoute>} />
           <Route path="/assistant" element={<ProtectedRoute><AssistantPage /></ProtectedRoute>} />
           <Route path="/jobs" element={<ProtectedRoute><JobsPage /></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><Suspense fallback={<div className="p-8 text-slate-400">Loading analytics…</div>}><AnalyticsPage /></Suspense></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
