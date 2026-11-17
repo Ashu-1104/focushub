@@ -10,7 +10,7 @@ import Settings from '../models/Settings.js';
 
 const seedDatabase = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/nexusdesk';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/focushub';
     await mongoose.connect(mongoUri);
     console.log('Connected to MongoDB');
 
@@ -26,12 +26,12 @@ const seedDatabase = async () => {
 
     // Create demo user
     const demoUser = new User({
-      email: 'demo@nexusdesk.com',
+      email: 'demo@focushub.com',
       username: 'demouser',
       password: 'DemoPass123',
       profile: {
         fullName: 'Demo User',
-        bio: 'Welcome to NexusDesk!',
+        bio: 'Welcome to FocusHub!',
       },
     });
     await demoUser.save();
@@ -62,7 +62,7 @@ const seedDatabase = async () => {
     // Create sample notes
     const notes = await Note.insertMany([
       {
-        title: 'Getting Started with NexusDesk',
+        title: 'Getting Started with FocusHub',
         content: '# Welcome!\n\nThis is your first note. You can create, edit, and organize notes using folders and tags.\n\n## Features:\n- Markdown support\n- Tag organization\n- Star favorites\n- Auto-save',
         tags: ['welcome', 'tutorial'],
         folderId: folders[2]._id,
@@ -255,7 +255,7 @@ const seedDatabase = async () => {
 
     console.log('\nDatabase seeded successfully!');
     console.log('\nDemo Credentials:');
-    console.log('   Email: demo@nexusdesk.com');
+    console.log('   Email: demo@focushub.com');
     console.log('   Password: DemoPass123');
 
     await mongoose.disconnect();

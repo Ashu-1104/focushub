@@ -1,7 +1,7 @@
 {
-  "name": "nexusdesk-server",
+  "name": "focushub-server",
   "version": "1.0.0",
-  "description": "NexusDesk - Backend API Server",
+  "description": "FocusHub - Backend API Server",
   "type": "module",
   "main": "src/server.js",
   "engines": {

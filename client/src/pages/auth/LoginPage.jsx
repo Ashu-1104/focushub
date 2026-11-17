@@ -8,7 +8,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login, loading } = useAuth();
   const [formData, setFormData] = useState({
-    email: 'demo@nexusdesk.com',
+    email: 'demo@focushub.com',
     password: 'DemoPass123',
   });
   const [error, setError] = useState('');
@@ -34,7 +34,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent mb-2">
-            NexusDesk
+            FocusHub
           </h1>
           <p className="text-slate-400">Welcome back to your workspace</p>
         </div>
@@ -78,7 +78,7 @@ export default function LoginPage() {
           <p className="text-xs text-slate-400 text-center">
             Demo Credentials (pre-filled):
             <br />
-            <code className="text-primary-400">demo@nexusdesk.com</code>
+            <code className="text-primary-400">demo@focushub.com</code>
             <br />
             <code className="text-primary-400">DemoPass123</code>
           </p>

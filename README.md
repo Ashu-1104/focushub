@@ -1,10 +1,6 @@
-# NexusDesk
+# FocusHub
 
-NexusDesk is a modern productivity workspace with notes, tasks, focus sessions, saved resources, settings, authentication, and a persistent AI assistant.
-
-## Live Demo
-
-**[NexusDesk Premium Productivity](https://nexus-desk-premium-productivity-des-umber.vercel.app/)**
+FocusHub is a modern productivity workspace with notes, tasks, focus sessions, saved resources, settings, authentication, and a persistent AI assistant.
 
 ## Features
 
@@ -24,7 +20,7 @@ The backend owns all AI provider calls so API keys never ship to the browser.
 2. The Express controller loads the current conversation from MongoDB.
 3. `server/src/services/aiProvider.js` builds an OpenAI-compatible chat payload.
 4. OpenRouter receives the request at `https://openrouter.ai/api/v1/chat/completions`.
-5. NexusDesk streams the OpenRouter response server-side, aggregates it, saves the assistant reply, and returns clean model metadata to the UI.
+5. FocusHub streams the OpenRouter response server-side, aggregates it, saves the assistant reply, and returns clean model metadata to the UI.
 
 Required OpenRouter headers:
 
@@ -37,7 +33,7 @@ Optional but configured headers:
 
 ```http
 HTTP-Referer: <your app URL>
-X-Title: NexusDesk
+X-Title: FocusHub
 ```
 
 ## AI Models
@@ -83,7 +79,7 @@ Example `server/.env`:
 PORT=5000
 NODE_ENV=development
 
-MONGODB_URI=mongodb://localhost:27017/nexusdesk
+MONGODB_URI=mongodb://localhost:27017/focushub
 
 JWT_SECRET=change_this_jwt_secret
 JWT_REFRESH_SECRET=change_this_refresh_secret
@@ -97,7 +93,7 @@ OPENROUTER_API_KEY=sk-or-v1-your_openrouter_api_key
 OPENROUTER_MODEL=google/gemini-3-flash-preview
 OPENROUTER_FALLBACK_MODELS=google/gemini-3.1-flash-lite-preview,google/gemini-3.1-flash-lite,google/gemini-2.5-flash-lite,deepseek/deepseek-chat-v3-0324:free,meta-llama/llama-3.3-70b-instruct:free,mistralai/mistral-small-24b-instruct-2501:free,mistralai/mistral-small-3.2-24b-instruct
 OPENROUTER_HTTP_REFERER=http://localhost:5173
-OPENROUTER_APP_TITLE=NexusDesk
+OPENROUTER_APP_TITLE=FocusHub
 AI_STREAMING=true
 AI_REQUEST_TIMEOUT_MS=20000
 AI_MAX_TOKENS=700
@@ -113,7 +109,7 @@ VITE_ENV=development
 
 ## Fallback Behavior
 
-NexusDesk tries each model once, in order. It preserves the same system message, recent conversation history, and latest user prompt for every fallback attempt.
+FocusHub tries each model once, in order. It preserves the same system message, recent conversation history, and latest user prompt for every fallback attempt.
 
 Fallback activates for provider errors such as:
 
@@ -136,7 +132,7 @@ Check `OPENROUTER_API_KEY` on the server. It must be sent as `Authorization: Bea
 
 **Rate limited**
 
-OpenRouter free models can have strict limits. NexusDesk will try the next fallback automatically. Retry later if the whole chain is rate limited.
+OpenRouter free models can have strict limits. FocusHub will try the next fallback automatically. Retry later if the whole chain is rate limited.
 
 **Model unavailable**
 
@@ -187,21 +183,19 @@ npm run build
 
 Set server environment variables on the backend host, and set `VITE_API_URL` on the frontend host.
 
-## Demo
+## Demo account
 
-Live app:
-
-```text
-https://nexus-desk-premium-productivity-des-umber.vercel.app/
-```
-
-Demo credentials:
+After running `npm run seed` in `server`, sign in with:
 
 ```text
-Email: demo@nexusdesk.com
+Email: demo@focushub.com
 Password: DemoPass123
 ```
 
+## Credits
+
+FocusHub is built on [NexusDesk](https://github.com/ManakRaj-7/NexusDesk-Premium-Productivity-Desktop-Web-App) by Manak Raj, released under the MIT License. The original copyright notice is kept in [LICENSE](./LICENSE).
+
 ## License
 
-MIT
+[MIT](./LICENSE)

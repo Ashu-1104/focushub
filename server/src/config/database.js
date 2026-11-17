@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/nexusdesk';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/focushub';
     await mongoose.connect(mongoUri);
     console.log('MongoDB connected successfully');
   } catch (error) {

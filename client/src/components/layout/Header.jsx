@@ -16,7 +16,7 @@ export const Header = () => {
           <Menu size={20} />
         </button>
         <div className="text-xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-          NexusDesk
+          FocusHub
         </div>
       </div>
 

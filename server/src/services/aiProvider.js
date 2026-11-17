@@ -66,7 +66,7 @@ const getHeaders = (apiKey) => ({
   Authorization: `Bearer ${apiKey}`,
   'Content-Type': 'application/json',
   'HTTP-Referer': trimEnv(process.env.OPENROUTER_HTTP_REFERER) || trimEnv(process.env.CLIENT_URL) || 'http://localhost:5173',
-  'X-Title': trimEnv(process.env.OPENROUTER_APP_TITLE) || 'NexusDesk',
+  'X-Title': trimEnv(process.env.OPENROUTER_APP_TITLE) || 'FocusHub',
 });
 
 const getRequestOptions = () => ({
@@ -313,7 +313,7 @@ export const createAssistantError = (attempts) => {
     status = 503;
     code = 'OPENROUTER_NETWORK_ERROR';
   } else if (rateLimit) {
-    message = 'OpenRouter rate limits are busy. NexusDesk tried the fallback models; please retry shortly.';
+    message = 'OpenRouter rate limits are busy. FocusHub tried the fallback models; please retry shortly.';
     status = 429;
     code = 'OPENROUTER_RATE_LIMITED';
   } else if (timeout) {

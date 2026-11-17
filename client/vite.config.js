@@ -8,8 +8,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon.svg'],
       manifest: {
-        name: 'NexusDesk Premium',
-        short_name: 'NexusDesk',
+        name: 'FocusHub',
+        short_name: 'FocusHub',
         description: 'Premium productivity desktop web app',
         theme_color: '#0f172a',
         background_color: '#0f172a',

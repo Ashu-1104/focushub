@@ -100,8 +100,8 @@ export default function DashboardPage() {
                 <textarea
                   className="w-full h-40 bg-transparent text-slate-100 p-4 resize-none focus:outline-none placeholder-slate-500"
                   placeholder="Jot down a quick thought, idea, or phone number..."
-                  defaultValue={localStorage.getItem('nexus_scratchpad') || ''}
-                  onChange={(e) => localStorage.setItem('nexus_scratchpad', e.target.value)}
+                  defaultValue={localStorage.getItem('focushub_scratchpad') || ''}
+                  onChange={(e) => localStorage.setItem('focushub_scratchpad', e.target.value)}
                 />
               </Card>
             </div>

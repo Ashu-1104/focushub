@@ -1,7 +1,7 @@
 {
-  "name": "nexusdesk-client",
+  "name": "focushub-client",
   "version": "1.0.0",
-  "description": "NexusDesk - Frontend React App",
+  "description": "FocusHub - Frontend React App",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -32,7 +32,7 @@ export const sendMessage = async (req, res, next) => {
     }
 
     // 2. Generate through OpenRouter with model fallbacks
-    const systemMsg = "You are NexusDesk AI, a concise productivity assistant. Keep answers practical, brief, and easy to scan. Bold only the most important terms.";
+    const systemMsg = "You are FocusHub AI, a concise productivity assistant. Keep answers practical, brief, and easy to scan. Bold only the most important terms.";
     const userPrompt = searchContext ? `CONTEXT: ${searchContext}\n\nUSER: ${message}` : message;
     const aiResult = await generateAssistantReply({
       systemMessage: systemMsg,

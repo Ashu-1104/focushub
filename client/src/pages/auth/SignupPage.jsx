@@ -35,7 +35,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent mb-2">
-            NexusDesk
+            FocusHub
           </h1>
           <p className="text-slate-400">Create your account</p>
         </div>
