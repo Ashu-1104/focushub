@@ -17,7 +17,10 @@ const tasksSlice = createSlice({
       state.items = action.payload;
     },
     addTask: (state, action) => {
-      state.items.unshift(action.payload);
+      // the same task can arrive from both the API response and a sync event
+      if (!state.items.some(t => t._id === action.payload._id)) {
+        state.items.unshift(action.payload);
+      }
     },
     updateTask: (state, action) => {
       const index = state.items.findIndex(t => t._id === action.payload._id);

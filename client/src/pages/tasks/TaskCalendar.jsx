@@ -13,6 +13,7 @@ import { ChevronLeft, ChevronRight, Plus, Repeat } from 'lucide-react';
 import { Button } from '../../components/ui';
 import { tasksService } from '../../services';
 import { updateTask as updateTaskAction } from '../../store/slices/tasksSlice';
+import { TASKS_CHANGED_EVENT } from '../../hooks/useRealtimeSync';
 import {
   WEEKDAYS,
   addDays,
@@ -109,6 +110,7 @@ export default function TaskCalendar({ onAddTask, refreshKey }) {
   const [anchor, setAnchor] = useState(() => new Date());
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
+  const [syncVersion, setSyncVersion] = useState(0);
 
   const days = useMemo(() => getVisibleDays(anchor, view), [anchor, view]);
   const tasksByDay = useMemo(() => groupTasksByDay(tasks), [tasks]);
@@ -124,7 +126,14 @@ export default function TaskCalendar({ onAddTask, refreshKey }) {
       .getRange(start, end)
       .then((response) => setTasks(response.data.tasks))
       .catch(() => setError('Could not load tasks for this period.'));
-  }, [days, refreshKey]);
+  }, [days, refreshKey, syncVersion]);
+
+  // refetch when another tab or device changes tasks
+  useEffect(() => {
+    const onChange = () => setSyncVersion((v) => v + 1);
+    window.addEventListener(TASKS_CHANGED_EVENT, onChange);
+    return () => window.removeEventListener(TASKS_CHANGED_EVENT, onChange);
+  }, []);
 
   const handleDragEnd = async ({ active, over }) => {
     const task = active.data.current?.task;

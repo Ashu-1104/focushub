@@ -6,6 +6,7 @@ const initialState = {
   commandPaletteOpen: false,
   activeSection: 'dashboard',
   notifications: [],
+  realtimeConnected: false,
 };
 
 const uiSlice = createSlice({
@@ -43,6 +44,9 @@ const uiSlice = createSlice({
         ...action.payload,
       });
     },
+    setRealtimeConnected: (state, action) => {
+      state.realtimeConnected = action.payload;
+    },
     removeNotification: (state, action) => {
       state.notifications = state.notifications.filter(n => n.id !== action.payload);
     },
@@ -58,6 +62,7 @@ export const {
   setCommandPaletteOpen,
   setActiveSection,
   addNotification,
+  setRealtimeConnected,
   removeNotification,
 } = uiSlice.actions;
 

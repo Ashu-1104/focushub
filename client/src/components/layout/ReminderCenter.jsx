@@ -1,10 +1,12 @@
 import { AnimatePresence } from 'framer-motion';
 import { Bell, X } from 'lucide-react';
-import { useTaskReminders } from '../../hooks';
+import { useRealtimeSync, useTaskReminders } from '../../hooks';
 import { Toast } from '../ui/Toast';
 
-// Rendered once at the app root so reminder toasts survive page changes.
+// Rendered once at the app root while signed in: keeps tasks synced in real time
+// and shows reminder toasts that survive page changes.
 export const ReminderCenter = () => {
+  useRealtimeSync();
   const { toasts, dismiss } = useTaskReminders();
 
   return (

@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { useAuth, useUI } from '../../hooks';
 import { Button } from '../ui';
 import { Menu, LogOut, Settings, Moon, Sun } from 'lucide-react';
@@ -5,6 +6,7 @@ import { Menu, LogOut, Settings, Moon, Sun } from 'lucide-react';
 export const Header = () => {
   const { user, logout } = useAuth();
   const { toggleSidebar, theme, toggleTheme } = useUI();
+  const live = useSelector((state) => state.ui.realtimeConnected);
 
   return (
     <header className="h-16 bg-dark-card border-b border-dark-border fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6">
@@ -21,6 +23,13 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center gap-4">
+        <span
+          className="hidden items-center gap-1.5 text-xs text-slate-400 sm:flex"
+          title={live ? 'Changes sync instantly across your devices' : 'Reconnecting…'}
+        >
+          <span className={`h-2 w-2 rounded-full ${live ? 'bg-green-400' : 'bg-slate-500'}`} />
+          {live ? 'Live' : 'Offline'}
+        </span>
         <button
           onClick={toggleTheme}
           className="p-2 hover:bg-dark-hover rounded-lg transition-colors"

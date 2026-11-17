@@ -1,6 +1,7 @@
 import axios from 'axios';
 import store from '../store';
 import { logout } from '../store/slices/authSlice';
+import { socket } from './socket';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -18,6 +19,10 @@ api.interceptors.request.use(
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // lets the server skip echoing our own changes back to this tab
+    if (socket.connected) {
+      config.headers['X-Socket-Id'] = socket.id;
     }
     return config;
   },
