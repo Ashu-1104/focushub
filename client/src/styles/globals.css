@@ -42,7 +42,16 @@ html.light input, html.light textarea, html.light select {
 }
 html.light .bg-slate-700 { background-color: #e2e8f0 !important; }
 html.light .text-white { color: #ffffff !important; }
+html.light .divide-dark-border > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
 /* ----------------------------- */
+
+/* Inputs on a coloured surface (dashboard hero) keep their own look in both themes */
+.input-on-color, html.light .input-on-color {
+  background-color: transparent !important;
+  border: 0 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
 
 /* Tailwind base styles - custom overrides */
 input, textarea, select {

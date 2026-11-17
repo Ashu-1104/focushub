@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { MainLayout } from '../../components/layout';
 import { Card, Button, Input, Badge, Modal } from '../../components/ui';
 import { tasksService } from '../../services';
@@ -36,7 +37,8 @@ export default function TasksPage() {
   const dispatch = useDispatch();
   const { items: tasks } = useSelector((state) => state.tasks);
   const [filter, setFilter] = useState('all');
-  const [view, setView] = useState('board');
+  const [searchParams] = useSearchParams();
+  const [view, setView] = useState(searchParams.get('view') === 'calendar' ? 'calendar' : 'board');
   const [calendarVersion, setCalendarVersion] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const emptyForm = {
