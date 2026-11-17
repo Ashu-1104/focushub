@@ -4,10 +4,21 @@
   "buildCommand": "npm run build --prefix client",
   "outputDirectory": "client/dist",
   "functions": {
-    "api/index.js": { "maxDuration": 300 }
+    "api/index.js": {
+      "maxDuration": 300
+    }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "regions": [
+    "bom1"
   ]
 }
