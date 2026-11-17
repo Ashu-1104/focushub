@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatHour, formatMinutes, heatLevel, heatmapWeeks, insights } from './analytics';
+import { formatAxisMinutes, formatHour, formatMinutes, heatLevel, heatmapWeeks, insights } from './analytics';
 
 describe('analytics helpers', () => {
   it('formats minutes and hours', () => {
@@ -7,6 +7,8 @@ describe('analytics helpers', () => {
     expect(formatMinutes(45)).toBe('45m');
     expect(formatMinutes(120)).toBe('2h');
     expect(formatMinutes(135)).toBe('2h 15m');
+    expect(formatAxisMinutes(45)).toBe('45m');
+    expect(formatAxisMinutes(135)).toBe('2.3h');
     expect(formatHour(0)).toBe('12 AM');
     expect(formatHour(9)).toBe('9 AM');
     expect(formatHour(15)).toBe('3 PM');

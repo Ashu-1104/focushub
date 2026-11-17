@@ -7,6 +7,10 @@ export const formatMinutes = (minutes) => {
   return h ? (m ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
 };
 
+// compact axis label: 45m, 1.5h, 10h
+export const formatAxisMinutes = (minutes) =>
+  minutes >= 60 ? `${Math.round((minutes / 60) * 10) / 10}h` : `${minutes}m`;
+
 export const formatHour = (hour) => {
   const suffix = hour < 12 ? 'AM' : 'PM';
   return `${hour % 12 || 12} ${suffix}`;

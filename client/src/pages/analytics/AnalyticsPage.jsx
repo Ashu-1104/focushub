@@ -9,7 +9,7 @@ import {
 import { MainLayout } from '../../components/layout';
 import { analyticsService } from '../../services';
 import { TASKS_CHANGED_EVENT } from '../../hooks/useRealtimeSync';
-import { formatDay, formatHour, formatMinutes, heatLevel, heatmapWeeks, insights } from '../../utils/analytics';
+import { formatAxisMinutes, formatDay, formatHour, formatMinutes, heatLevel, heatmapWeeks, insights } from '../../utils/analytics';
 
 const RANGES = [7, 30, 90];
 const PRIMARY = '#00d9ff';
@@ -176,7 +176,7 @@ export default function AnalyticsPage() {
                     <CartesianGrid stroke="rgba(148,163,184,.12)" vertical={false} />
                     <XAxis dataKey="date" tickFormatter={dayTick} {...axis} minTickGap={16} />
                     <YAxis yAxisId="tasks" allowDecimals={false} {...axis} />
-                    <YAxis yAxisId="focus" orientation="right" {...axis} tickFormatter={(m) => formatMinutes(m)} width={52} />
+                    <YAxis yAxisId="focus" orientation="right" {...axis} tickFormatter={formatAxisMinutes} width={52} />
                     <Tooltip content={<ChartTooltip labelFormatter={(d) => formatDay(d, { weekday: 'long', day: 'numeric', month: 'long' })} />} cursor={{ fill: 'rgba(148,163,184,.08)' }} />
                     <Area yAxisId="focus" type="monotone" dataKey="focusMinutes" name="Focus" stroke={ACCENT} strokeWidth={2} fill="url(#focusFill)" />
                     <Bar yAxisId="tasks" dataKey="completed" name="Tasks done" fill={PRIMARY} radius={[6, 6, 0, 0]} maxBarSize={28} />
@@ -212,7 +212,7 @@ export default function AnalyticsPage() {
                     <BarChart data={data.byHour} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
                       <CartesianGrid stroke="rgba(148,163,184,.12)" vertical={false} />
                       <XAxis dataKey="hour" tickFormatter={formatHour} {...axis} interval={3} />
-                      <YAxis {...axis} tickFormatter={(m) => formatMinutes(m)} width={48} />
+                      <YAxis {...axis} tickFormatter={formatAxisMinutes} width={48} />
                       <Tooltip content={<ChartTooltip labelFormatter={formatHour} />} cursor={{ fill: 'rgba(148,163,184,.08)' }} />
                       <Bar dataKey="focusMinutes" name="Focus" radius={[4, 4, 0, 0]}>
                         {data.byHour.map((h) => <Cell key={h.hour} fill={h.hour === peakHour?.hour && h.focusMinutes ? ACCENT : 'rgba(153,69,255,.45)'} />)}
