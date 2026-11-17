@@ -1,0 +1,6 @@
+{
+  "name": "focushub",
+  "private": true,
+  "type": "module",
+  "description": "FocusHub monorepo root: Vercel serves client/ and runs server/ as a serverless function (api/)."
+}

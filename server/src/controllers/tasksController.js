@@ -2,7 +2,7 @@ import Task from '../models/Task.js';
 import Activity from '../models/Activity.js';
 import { createTaskSchema, taskRangeSchema, updateTaskSchema } from '../validations/schemas.js';
 import { nextOccurrence } from '../utils/recurrence.js';
-import { emitToUser } from '../realtime/socket.js';
+import { emitToUser } from '../realtime/events.js';
 
 export const createTask = async (req, res, next) => {
   try {
@@ -32,7 +32,7 @@ export const createTask = async (req, res, next) => {
       metadata: { title },
     });
 
-    emitToUser(req, 'task:created', task);
+    await emitToUser(req, 'task:created', task);
 
     res.status(201).json({
       message: 'Task created',
@@ -144,8 +144,8 @@ export const updateTask = async (req, res, next) => {
       metadata: { title: task.title },
     });
 
-    emitToUser(req, 'task:updated', task);
-    if (nextTask) emitToUser(req, 'task:created', nextTask);
+    await emitToUser(req, 'task:updated', task);
+    if (nextTask) await emitToUser(req, 'task:created', nextTask);
 
     res.json({
       message: 'Task updated',
@@ -176,7 +176,7 @@ export const deleteTask = async (req, res, next) => {
       metadata: { title: task.title },
     });
 
-    emitToUser(req, 'task:deleted', { _id: task._id });
+    await emitToUser(req, 'task:deleted', { _id: task._id });
 
     res.json({ message: 'Task deleted' });
   } catch (error) {

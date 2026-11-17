@@ -16,6 +16,7 @@ import assistantRoutes from './routes/assistant.js';
 import linksRoutes from './routes/links.js';
 import settingsRoutes from './routes/settings.js';
 import analyticsRoutes from './routes/analytics.js';
+import eventsRoutes from './routes/events.js';
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Socket-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Client-Id', 'Last-Event-ID'],
   })
 );
 
@@ -55,6 +56,7 @@ app.use(`${apiPrefix}/assistant`, assistantRoutes);
 app.use(`${apiPrefix}/links`, linksRoutes);
 app.use(`${apiPrefix}/settings`, settingsRoutes);
 app.use(`${apiPrefix}/analytics`, analyticsRoutes);
+app.use(`${apiPrefix}/events`, eventsRoutes);
 
 // 404 Handler
 app.use((req, res) => {

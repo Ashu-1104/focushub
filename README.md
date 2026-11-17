@@ -12,7 +12,7 @@ FocusHub is a modern productivity workspace with notes, tasks, focus sessions, s
 - **Calendar view**: month and week calendar of tasks; drag a task to another day to reschedule it, or click a day to add one.
 - **Recurring tasks**: repeat daily, weekly or monthly; completing a task schedules the next one automatically.
 - **Reminders**: optional due time with a reminder (at due time, 10 min, 1 hour or 1 day before) as a browser notification and in-app toast.
-- **Real-time sync**: task changes appear instantly in your other tabs and devices over Socket.IO, with a live connection indicator.
+- **Real-time sync**: task changes appear in your other tabs and devices within a second or two (Server-Sent Events), with a live connection indicator.
 - Focus mode with session tracking and productivity stats.
 - Jobs, links, and file-style organization.
 - Command palette and responsive app-style navigation.
@@ -20,11 +20,26 @@ FocusHub is a modern productivity workspace with notes, tasks, focus sessions, s
 
 ## Tech stack
 
-React 18, Redux Toolkit, Vite, Tailwind CSS, dnd-kit, Socket.IO client · Node.js, Express, MongoDB/Mongoose, Socket.IO, JWT auth, Zod validation · Vitest, Supertest, Testing Library, ESLint, GitHub Actions.
+React 18, Redux Toolkit, Vite, Tailwind CSS, dnd-kit, Recharts · Node.js, Express, MongoDB/Mongoose, Server-Sent Events, JWT auth, Zod validation · Vitest, Supertest, Testing Library, ESLint, GitHub Actions · Vercel (static site + serverless API).
 
 ## Real-time sync
 
-Each signed-in browser opens a Socket.IO connection authenticated with the user's JWT and joins a private `user:<id>` room. When a task is created, updated or deleted, the API emits the change to that room, skipping the tab that made the change (identified by the `X-Socket-Id` request header). Other tabs apply the change to the Redux store and refresh the calendar.
+Every task change is also written to a small `SyncEvent` collection (kept for a day). Each open tab listens on `GET /api/events`, a Server-Sent Events stream that sends that user's new events as they arrive, skipping the tab that made the change (`X-Client-Id`). Streams end after a few minutes, which keeps them within serverless limits; the browser reconnects with `Last-Event-ID` and resumes exactly where it left off, so no change is missed. The same code runs on a long-lived Node server and on Vercel.
+
+## Deploying to Vercel
+
+The repository root is a single Vercel project (`vercel.json`): the React app in `client/` is built as the static site, and `api/index.js` runs the Express API as one serverless function under `/api`, so the site and the API share an origin and cookies just work.
+
+Set these environment variables in the Vercel project:
+
+| Variable | Value |
+| --- | --- |
+| `MONGODB_URI` | MongoDB Atlas connection string (Vercel Storage → MongoDB Atlas adds it for you) |
+| `JWT_SECRET`, `JWT_REFRESH_SECRET` | long random strings |
+| `JWT_EXPIRE`, `JWT_REFRESH_EXPIRE` | `15m`, `7d` |
+| `NODE_ENV` | `production` |
+| `VITE_API_URL` | `/api` |
+| `OPENROUTER_API_KEY` | optional, for the AI assistant |
 
 ## Testing
 

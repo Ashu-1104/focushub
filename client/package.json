@@ -31,7 +31,6 @@
     "react-router-dom": "^6.15.0",
     "recharts": "^2.15.0",
     "redux": "^4.2.1",
-    "socket.io-client": "^4.8.1",
     "tailwindcss": "^3.3.0",
     "use-sound": "^5.0.0",
     "vite-plugin-pwa": "^1.2.0",
