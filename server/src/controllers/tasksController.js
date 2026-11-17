@@ -1,10 +1,12 @@
 import Task from '../models/Task.js';
 import Activity from '../models/Activity.js';
-import { createTaskSchema, taskRangeSchema } from '../validations/schemas.js';
+import { createTaskSchema, taskRangeSchema, updateTaskSchema } from '../validations/schemas.js';
+import { nextOccurrence } from '../utils/recurrence.js';
 
 export const createTask = async (req, res, next) => {
   try {
-    const { title, description, priority, dueDate, folderId } = createTaskSchema.parse(req.body);
+    const { title, description, priority, dueDate, folderId, allDay, recurrence, reminderMinutes } =
+      createTaskSchema.parse(req.body);
 
     const task = new Task({
       title,
@@ -13,6 +15,9 @@ export const createTask = async (req, res, next) => {
       status: 'todo',
       dueDate: dueDate ? new Date(dueDate) : null,
       folderId,
+      allDay,
+      recurrence,
+      reminderMinutes,
       userId: req.user.userId,
     });
 
@@ -90,15 +95,16 @@ export const getTaskById = async (req, res, next) => {
 
 export const updateTask = async (req, res, next) => {
   try {
-    const { title, description, status, priority, dueDate, folderId } = req.body;
+    const { dueDate, status, ...fields } = updateTaskSchema.parse(req.body);
+
+    const existing = await Task.findOne({ _id: req.params.id, userId: req.user.userId });
+    if (!existing) {
+      return res.status(404).json({ error: 'Task not found', code: 'NOT_FOUND' });
+    }
 
     // Only change the fields that were sent, so e.g. moving a task on the
     // calendar does not wipe its status, or changing status its due date.
-    const changes = { updatedAt: Date.now() };
-    if (title !== undefined) changes.title = title;
-    if (description !== undefined) changes.description = description;
-    if (priority !== undefined) changes.priority = priority;
-    if (folderId !== undefined) changes.folderId = folderId;
+    const changes = { ...fields, updatedAt: Date.now() };
     if (dueDate !== undefined) changes.dueDate = dueDate ? new Date(dueDate) : null;
     if (status !== undefined) {
       changes.status = status;
@@ -106,13 +112,25 @@ export const updateTask = async (req, res, next) => {
     }
 
     const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.userId },
+      { _id: existing._id },
       { $set: changes },
       { new: true }
     );
 
-    if (!task) {
-      return res.status(404).json({ error: 'Task not found', code: 'NOT_FOUND' });
+    // Completing a repeating task schedules its next occurrence.
+    let nextTask = null;
+    if (status === 'done' && existing.status !== 'done' && task.recurrence !== 'none') {
+      nextTask = await Task.create({
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        folderId: task.folderId,
+        allDay: task.allDay,
+        recurrence: task.recurrence,
+        reminderMinutes: task.reminderMinutes,
+        dueDate: nextOccurrence(task.dueDate || new Date(), task.recurrence),
+        userId: task.userId,
+      });
     }
 
     await Activity.create({
@@ -126,6 +144,7 @@ export const updateTask = async (req, res, next) => {
     res.json({
       message: 'Task updated',
       task,
+      nextTask,
     });
   } catch (error) {
     next(error);

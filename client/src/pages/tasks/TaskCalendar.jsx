@@ -9,7 +9,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import clsx from 'clsx';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Repeat } from 'lucide-react';
 import { Button } from '../../components/ui';
 import { tasksService } from '../../services';
 import { updateTask as updateTaskAction } from '../../store/slices/tasksSlice';
@@ -18,12 +18,18 @@ import {
   addDays,
   dateKey,
   dueDateFromKey,
+  formatDueTime,
   formatRangeTitle,
   getVisibleDays,
   groupTasksByDay,
   isSameDay,
   shiftAnchor,
 } from '../../utils/calendar';
+
+const formatTime24 = (date) => {
+  const d = new Date(date);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+};
 
 const PRIORITY_BORDER = {
   low: 'border-l-slate-400',
@@ -53,6 +59,8 @@ function TaskChip({ task }) {
         isDragging && 'relative z-50 shadow-lg ring-2 ring-primary-500'
       )}
     >
+      {task.recurrence && task.recurrence !== 'none' && <Repeat size={10} className="mr-1 inline" />}
+      {!task.allDay && <span className="mr-1 text-slate-400">{formatDueTime(task.dueDate)}</span>}
       {task.title}
     </div>
   );
@@ -122,7 +130,8 @@ export default function TaskCalendar({ onAddTask, refreshKey }) {
     const task = active.data.current?.task;
     if (!task || !over || dateKey(task.dueDate) === over.id) return;
 
-    const dueDate = dueDateFromKey(over.id);
+    // keep the task's time of day when it has one
+    const dueDate = dueDateFromKey(over.id, task.allDay ? undefined : formatTime24(task.dueDate));
     const previous = tasks;
     setTasks((current) => current.map((t) => (t._id === task._id ? { ...t, dueDate } : t)));
 

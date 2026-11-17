@@ -9,10 +9,15 @@ import {
   updateTask as updateTaskAction,
   deleteTask as deleteTaskAction,
 } from '../../store/slices/tasksSlice';
-import { CalendarDays, Check, LayoutGrid, Plus, Trash2 } from 'lucide-react';
+import { Bell, CalendarDays, Check, LayoutGrid, Plus, Repeat, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 import TaskCalendar from './TaskCalendar';
-import { dueDateFromKey } from '../../utils/calendar';
+import {
+  REMINDER_OPTIONS,
+  REPEAT_LABELS,
+  dueDateFromKey,
+  formatDueTime,
+} from '../../utils/calendar';
 
 const STATUS_COLORS = {
   todo: 'bg-slate-700',
@@ -34,7 +39,15 @@ export default function TasksPage() {
   const [view, setView] = useState('board');
   const [calendarVersion, setCalendarVersion] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const emptyForm = { title: '', description: '', priority: 'medium', dueDate: '' };
+  const emptyForm = {
+    title: '',
+    description: '',
+    priority: 'medium',
+    dueDate: '',
+    dueTime: '',
+    recurrence: 'none',
+    reminder: '',
+  };
   const [formData, setFormData] = useState(emptyForm);
 
   const openCreateModal = (dueDate = '') => {
@@ -60,10 +73,13 @@ export default function TasksPage() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const { dueDate, ...rest } = formData;
-      const response = await tasksService.create(
-        dueDate ? { ...rest, dueDate: dueDateFromKey(dueDate) } : rest
-      );
+      const { dueDate, dueTime, reminder, ...rest } = formData;
+      const payload = { ...rest, reminderMinutes: reminder === '' ? null : Number(reminder) };
+      if (dueDate) {
+        payload.dueDate = dueDateFromKey(dueDate, dueTime || undefined);
+        payload.allDay = !dueTime;
+      }
+      const response = await tasksService.create(payload);
       dispatch(addTask(response.data.task));
       setFormData(emptyForm);
       setIsModalOpen(false);
@@ -75,11 +91,11 @@ export default function TasksPage() {
 
   const handleStatusChange = async (task, status) => {
     try {
-      const response = await tasksService.update(task._id, {
-        ...task,
-        status,
-      });
+      const response = await tasksService.update(task._id, { status });
       dispatch(updateTaskAction(response.data.task));
+      if (response.data.nextTask) {
+        dispatch(addTask(response.data.nextTask));
+      }
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -154,8 +170,21 @@ export default function TasksPage() {
                       <p className="text-sm text-slate-400 mb-3 line-clamp-2">{task.description}</p>
                     )}
                     {task.dueDate && (
-                      <p className="text-xs text-slate-500">
-                        Due: {new Date(task.dueDate).toLocaleDateString()}
+                      <p className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                        <span>
+                          Due: {new Date(task.dueDate).toLocaleDateString()}
+                          {!task.allDay && `, ${formatDueTime(task.dueDate)}`}
+                        </span>
+                        {task.recurrence && task.recurrence !== 'none' && (
+                          <span className="flex items-center gap-1 text-primary-400">
+                            <Repeat size={12} /> {REPEAT_LABELS[task.recurrence]}
+                          </span>
+                        )}
+                        {task.reminderMinutes != null && (
+                          <span className="flex items-center gap-1" title="Reminder set">
+                            <Bell size={12} />
+                          </span>
+                        )}
                       </p>
                     )}
                     <div className="mt-4 flex items-center justify-between gap-2">
@@ -233,12 +262,57 @@ export default function TasksPage() {
               </select>
             </div>
 
-            <Input
-              label="Due date"
-              type="date"
-              value={formData.dueDate}
-              onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Due date"
+                type="date"
+                value={formData.dueDate}
+                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+              />
+              <Input
+                label="Time (optional)"
+                type="time"
+                value={formData.dueTime}
+                disabled={!formData.dueDate}
+                onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Repeat</label>
+                <select
+                  value={formData.recurrence}
+                  onChange={(e) => setFormData({ ...formData, recurrence: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-slate-100 focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="none">Does not repeat</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Reminder</label>
+                <select
+                  value={formData.reminder}
+                  disabled={!formData.dueDate}
+                  onChange={(e) => {
+                    setFormData({ ...formData, reminder: e.target.value });
+                    if (e.target.value !== '' && 'Notification' in window && Notification.permission === 'default') {
+                      Notification.requestPermission();
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-slate-100 focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
+                >
+                  {REMINDER_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
             <div className="flex gap-2 justify-end">
               <Button variant="secondary" onClick={() => setIsModalOpen(false)}>

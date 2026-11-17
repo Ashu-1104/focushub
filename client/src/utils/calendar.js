@@ -26,8 +26,22 @@ export const dateKey = (date) => {
   return `${d.getFullYear()}-${month}-${day}`;
 };
 
-// Due dates are stored at local noon so they never shift a day across time zones.
-export const dueDateFromKey = (key) => new Date(`${key}T12:00:00`).toISOString();
+// All-day due dates are stored at local noon so they never shift a day across
+// time zones; a picked time ("09:30") is used as-is.
+export const dueDateFromKey = (key, time = '12:00') => new Date(`${key}T${time}:00`).toISOString();
+
+export const formatDueTime = (date) =>
+  new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+export const REPEAT_LABELS = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly' };
+
+export const REMINDER_OPTIONS = [
+  { value: '', label: 'No reminder' },
+  { value: '0', label: 'At due time' },
+  { value: '10', label: '10 minutes before' },
+  { value: '60', label: '1 hour before' },
+  { value: '1440', label: '1 day before' },
+];
 
 export const isSameDay = (a, b) => dateKey(a) === dateKey(b);
 

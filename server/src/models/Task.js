@@ -25,6 +25,22 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    // false when the user picked a specific due time
+    allDay: {
+      type: Boolean,
+      default: true,
+    },
+    recurrence: {
+      type: String,
+      enum: ['none', 'daily', 'weekly', 'monthly'],
+      default: 'none',
+    },
+    // minutes before the due time to remind the user; null = no reminder
+    reminderMinutes: {
+      type: Number,
+      default: null,
+      min: 0,
+    },
     folderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Folder',

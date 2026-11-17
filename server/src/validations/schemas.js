@@ -30,6 +30,22 @@ export const createTaskSchema = z.object({
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
   dueDate: z.string().datetime().optional(),
   folderId: z.string().optional(),
+  allDay: z.boolean().optional(),
+  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).optional(),
+  reminderMinutes: z.number().int().min(0).max(10080).nullable().optional(),
+});
+
+// Every field is optional on update; unknown fields are ignored.
+export const updateTaskSchema = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
+  status: z.enum(['todo', 'doing', 'done']).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
+  dueDate: z.string().datetime().nullable().optional(),
+  folderId: z.string().nullable().optional(),
+  allDay: z.boolean().optional(),
+  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).optional(),
+  reminderMinutes: z.number().int().min(0).max(10080).nullable().optional(),
 });
 
 export const taskRangeSchema = z

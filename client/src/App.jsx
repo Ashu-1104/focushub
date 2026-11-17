@@ -5,6 +5,7 @@ import { AppRoutes } from './routes';
 import { initKeyboardShortcuts } from './utils/keyboard';
 
 import { CommandPalette } from './components/ui/CommandPalette';
+import { ReminderCenter } from './components/layout';
 
 export default function App() {
   const { isAuthenticated, getProfile } = useAuth();
@@ -64,6 +65,7 @@ export default function App() {
   return (
     <>
       <CommandPalette />
+      {isAuthenticated && <ReminderCenter />}
       <AppRoutes />
     </>
   );
