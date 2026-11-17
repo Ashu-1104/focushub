@@ -27,6 +27,7 @@ html.light body {
   color: #0f172a;
 }
 html.light .bg-dark-base { background-color: #f8fafc !important; }
+html.light .bg-dark-base\/60 { background-color: #f1f5f9 !important; }
 html.light .bg-dark-card { background-color: #ffffff !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important; }
 html.light .bg-dark-card\/50 { background-color: rgba(255, 255, 255, 0.5) !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important; }
 html.light .bg-dark-hover, html.light .hover\:bg-dark-hover:hover { background-color: #f1f5f9 !important; }

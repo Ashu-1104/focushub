@@ -119,9 +119,9 @@ export default function TasksPage() {
   return (
     <MainLayout>
       <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <h1 className="text-3xl font-bold text-slate-100">Tasks</h1>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex rounded-lg border border-dark-border p-1" role="tablist" aria-label="Task view">
               {[
                 { id: 'board', label: 'Board', Icon: LayoutGrid },

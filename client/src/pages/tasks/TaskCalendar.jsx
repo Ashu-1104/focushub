@@ -54,7 +54,7 @@ function TaskChip({ task }) {
       style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined}
       title={`${task.title} (${task.priority})`}
       className={clsx(
-        'truncate rounded-md border-l-4 bg-dark-hover px-2 py-1 text-xs text-slate-200 cursor-grab active:cursor-grabbing',
+        'truncate rounded-md border-l-4 bg-dark-hover px-2 py-1 text-xs text-slate-100 cursor-grab active:cursor-grabbing',
         PRIORITY_BORDER[task.priority],
         task.status === 'done' && 'line-through opacity-50',
         isDragging && 'relative z-50 shadow-lg ring-2 ring-primary-500'
@@ -192,8 +192,9 @@ export default function TaskCalendar({ onAddTask, refreshKey }) {
       )}
 
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="overflow-hidden rounded-xl border-l border-t border-dark-border">
-          <div className="grid grid-cols-7">
+        {/* scrolls sideways on small screens instead of squashing the days */}
+        <div className="overflow-x-auto rounded-xl border-l border-t border-dark-border">
+          <div className="grid min-w-[720px] grid-cols-7">
             {WEEKDAYS.map((d) => (
               <div key={d} className="border-b border-r border-dark-border bg-dark-base px-2 py-2 text-xs font-medium uppercase tracking-wider text-slate-400">
                 {d}

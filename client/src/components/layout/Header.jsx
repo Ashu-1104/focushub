@@ -44,7 +44,7 @@ export const Header = () => {
           ) : (
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary-500 to-accent-500" />
           )}
-          <span className="text-sm font-medium">{user?.username || 'User'}</span>
+          <span className="hidden text-sm font-medium sm:inline">{user?.username || 'User'}</span>
         </div>
 
         <button
