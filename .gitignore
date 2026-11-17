@@ -38,3 +38,6 @@ logs/
 # Database
 *.pem
 .mongodb/
+
+# Vercel CLI project link
+.vercel
