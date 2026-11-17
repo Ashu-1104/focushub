@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "seed": "node src/jobs/seed.js"
+    "seed": "node src/jobs/seed.js",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,10 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.0.1",
+    "socket.io-client": "^4.8.1",
+    "supertest": "^7.1.4",
+    "vitest": "^2.1.9"
   }
 }
