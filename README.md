@@ -230,10 +230,6 @@ Email: demo@focushub.com
 Password: DemoPass123
 ```
 
-## Credits
-
-FocusHub is built on [NexusDesk](https://github.com/ManakRaj-7/NexusDesk-Premium-Productivity-Desktop-Web-App) by Manak Raj, released under the MIT License. The original copyright notice is kept in [LICENSE](./LICENSE).
-
 ## License
 
 [MIT](./LICENSE)
